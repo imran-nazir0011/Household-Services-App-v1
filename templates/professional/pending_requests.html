@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Pending Service Requests{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Pending Service Requests</h2>
+    
+    {% if requests %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Service</th>
+                    <th>Date of Request</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>{{ request.customer.name }}</td>
+                    <td>{{ request.service.name }}</td>
+                    <td>{{ request.date_of_request.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <a href="{{ url_for('professional_accept_request', request_id=request.id) }}" class="btn btn-success btn-sm">Accept</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No pending requests at the moment.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">My Profile</h2>
+
+    <!-- Profile Form -->
+    <form method="POST" action="{{ url_for('professional_profile') }}">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Personal Information</h5>
+                
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ professional.name }}" required>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ professional.username }}" required disabled>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ professional.email }}" required>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ professional.phone }}" required>
+                </div>
+
+                <!-- Service Type -->
+                <div class="form-group">
+                    <label for="service_type">Service Type</label>
+                    <input type="text" class="form-control" id="service_type" name="service_type" value="{{ professional.service_type }}" required>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-group">
+                    <label for="experience">Years of Experience</label>
+                    <input type="number" class="form-control" id="experience" name="experience" value="{{ professional.experience }}" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Verification Status -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Verification Status</h5>
+            {% if professional.verified %}
+                <p class="badge badge-success">Verified</p>
+            {% else %}
+                <p class="badge badge-warning">Not Verified</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
