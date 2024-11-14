@@ -6,21 +6,48 @@
 <div class="container">
     <h2 class="my-4">Admin Dashboard</h2>
     <div class="row">
+        <!-- Manage Customers -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Manage Users</h5>
-                    <p class="card-text">View, approve, or block customers and service professionals.</p>
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Manage Users</a>
+                    <h5 class="card-title">Manage Customers</h5>
+                    <p class="card-text">View, approve, or block customers.</p>
+                    <a href="{{ url_for('manage_customers') }}" class="btn btn-primary">Manage Customers</a>
                 </div>
             </div>
         </div>
+
+        <!-- Manage Service Professionals -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Service Professionals</h5>
+                    <p class="card-text">View, approve, or reject service professionals.</p>
+                    <a href="{{ url_for('manage_service_professionals') }}" class="btn btn-primary">Manage Service Professionals</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Manage Services -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Manage Services</h5>
                     <p class="card-text">Create, update, or delete services offered on the platform.</p>
-                    <a href="{{ url_for('admin_manage_services') }}" class="btn btn-primary">Manage Services</a>
+                    <a href="{{ url_for('manage_services') }}" class="btn btn-primary">Manage Services</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Service Requests -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Service Requests</h5>
+                    <p class="card-text">View and manage pending, assigned, or completed service requests.</p>
+                    <a href="{{ url_for('manage_service_requests') }}" class="btn btn-primary">Manage Service Requests</a>
                 </div>
             </div>
         </div>
