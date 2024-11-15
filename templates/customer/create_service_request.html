@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Service Request{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Create a New Service Request</h2>
+
+    <!-- Form to create a new service request -->
+    <form method="POST">
+        {% if flash_messages %}
+            <div class="alert alert-success" role="alert">
+                {{ flash_messages }}
+            </div>
+        {% endif %}
+
+        <!-- Service Selection -->
+        <div class="form-group">
+            <label for="service_id">Select Service</label>
+            <select class="form-control" id="service_id" name="service_id" required>
+                <option value="">-- Select a Service --</option>
+                {% for service in services %}
+                    <option value="{{ service.id }}">{{ service.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Request Date -->
+        <div class="form-group">
+            <label for="date_of_request">Request Date</label>
+            <input type="date" class="form-control" id="date_of_request" name="date_of_request" required>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Create Request</button>
+    </form>
+</div>
+{% endblock %}

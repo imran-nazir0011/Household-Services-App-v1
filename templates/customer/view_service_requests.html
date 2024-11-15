@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}My Service Requests{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">My Service Requests</h2>
+
+    <!-- Macro to render request card -->
+    {% macro render_request_card(request) %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ request.service.name }}</h5>
+                    <p class="card-text">Request Date: {{ request.date_of_request.strftime('%Y-%m-%d') }}</p>
+                    <p class="card-text"><strong>Status:</strong> {{ request.service_status }}</p>
+                    <p class="card-text">{{ request.service.description }}</p>
+                    <a href="{{ url_for('view_service_request', request_id=request.id) }}" class="btn btn-info">View Details</a>
+                </div>
+            </div>
+        </div>
+    {% endmacro %}
+
+    <!-- Check if customer has any requests -->
+    {% if service_requests %}
+        <div class="row">
+            {% for request in service_requests %}
+                {{ render_request_card(request) }} <!-- Render each request using the macro -->
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            You have no active service requests at the moment.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

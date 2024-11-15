@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Welcome, {{ customer.username }}!</h2>
+    
+    <div class="row">
+        <!-- Available Services Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Available Services</h5>
+                    <p class="card-text">Browse and book services based on your needs.</p>
+                    <a href="{{ url_for('view_services') }}" class="btn btn-primary">View Services</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Requests Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">My Service Requests</h5>
+                    <p class="card-text">Track your active service requests and view their statuses.</p>
+                    <a href="{{ url_for('view_service_requests') }}" class="btn btn-primary">My Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Service Request Section -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Create a New Service Request</h5>
+                    <p class="card-text">Book a service by selecting an available option and entering details.</p>
+                    <a href="{{ url_for('create_service_request') }}" class="btn btn-success">New Request</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">My Profile</h2>
+
+    <!-- Profile Form -->
+    <form method="POST" action="{{ url_for('professional_profile') }}">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Personal Information</h5>
+                
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ professional.name }}" required disabled>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ professional.username }}" required disabled>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ professional.email }}" required disabled>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ professional.phone }}" required disabled>
+                </div>
+
+                <!-- Service Type -->
+                <div class="form-group">
+                    <label for="service_type">Service Type</label>
+                    <select class="form-control" id="service_type" name="service_type" required disabled>
+                        <option value="Plumbing" {% if professional.service_type == 'Plumbing' %}selected{% endif %}>Plumbing</option>
+                        <option value="Electrical" {% if professional.service_type == 'Electrical' %}selected{% endif %}>Electrical</option>
+                        <option value="Cleaning" {% if professional.service_type == 'Cleaning' %}selected{% endif %}>Cleaning</option>
+                        <option value="Gardening" {% if professional.service_type == 'Gardening' %}selected{% endif %}>Gardening</option>
+                        <option value="Carpentry" {% if professional.service_type == 'Carpentry' %}selected{% endif %}>Carpentry</option>
+                        <option value="Painting" {% if professional.service_type == 'Painting' %}selected{% endif %}>Painting</option>
+                    </select>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-group">
+                    <label for="experience">Years of Experience</label>
+                    <input type="number" class="form-control" id="experience" name="experience" value="{{ professional.experience }}" required disabled>
+                </div>
+
+                <!-- Edit and Save Buttons -->
+                <button type="button" class="btn btn-secondary" id="edit-btn" onclick="enableEditMode()">Edit</button>
+                <button type="submit" class="btn btn-primary d-none" id="save-btn">Save</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Verification Status -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Verification Status</h5>
+            {% if professional.verified %}
+                <p class="badge badge-success">Verified</p>
+            {% else %}
+                <p class="badge badge-warning">Not Verified</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function enableEditMode() {
+        // Enable form fields
+        document.getElementById('name').disabled = false;
+        document.getElementById('email').disabled = false;
+        document.getElementById('phone').disabled = false;
+        document.getElementById('service_type').disabled = false;
+        document.getElementById('experience').disabled = false;
+
+        // Show Save button and hide Edit button
+        document.getElementById('edit-btn').classList.add('d-none');
+        document.getElementById('save-btn').classList.remove('d-none');
+    }
+</script>
+{% endblock %}
