@@ -1,37 +1,76 @@
 {% extends 'base.html' %}
 
-{% block title %}My Service Requests{% endblock %}
+{% block title %}View Service Requests{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4">My Service Requests</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Your Service Requests</h2>
 
-    <!-- Macro to render request card -->
-    {% macro render_request_card(request) %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ request.service.name }}</h5>
-                    <p class="card-text">Request Date: {{ request.date_of_request.strftime('%Y-%m-%d') }}</p>
-                    <p class="card-text"><strong>Status:</strong> {{ request.service_status }}</p>
-                    <p class="card-text">{{ request.service.description }}</p>
-                    <a href="{{ url_for('view_service_request', request_id=request.id) }}" class="btn btn-info">View Details</a>
+    <!-- Flash messages for feedback -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
-        </div>
-    {% endmacro %}
-
-    <!-- Check if customer has any requests -->
-    {% if service_requests %}
-        <div class="row">
-            {% for request in service_requests %}
-                {{ render_request_card(request) }} <!-- Render each request using the macro -->
             {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Service Requests Table -->
+    <div class="card">
+        <div class="card-body">
+            {% if requests %}
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Service</th>
+                            <th>Date of Request</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in requests %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ request.service.name }}</td>
+                            <td>{{ request.date_of_request.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                {% if request.service_status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% elif request.service_status == 'completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ request.remarks if request.remarks else 'N/A' }}</td>
+                            <td>
+                                <!-- Cancel Request Action -->
+                                {% if request.service_status == 'pending' %}
+                                <form action="{{ url_for('cancel_service_request', request_id=request.id) }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this request?')">Cancel</button>
+                                </form>
+                                {% else %}
+                                    <button class="btn btn-secondary btn-sm" disabled>Cancel</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-center">You have no service requests at the moment.</p>
+            {% endif %}
         </div>
-    {% else %}
-        <div class="alert alert-warning" role="alert">
-            You have no active service requests at the moment.
-        </div>
-    {% endif %}
+    </div>
+
+    <div class="text-end mt-3">
+        <a href="{{ url_for('create_service_request') }}" class="btn btn-primary">Create New Request</a>
+    </div>
 </div>
 {% endblock %}

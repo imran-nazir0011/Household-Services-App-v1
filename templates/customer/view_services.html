@@ -10,7 +10,10 @@
     {% macro render_service_card(service) %}
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm">
-                <img src="{{ service.image_url if service.image_url else 'https://via.placeholder.com/150' }}" class="card-img-top" alt="{{ service.name }}">
+                <img src="{{ url_for('static', filename='images/' ~ service.image) if service.image else 'https://via.placeholder.com/150' }}" 
+                class="card-img-top img-thumbnail img-fluid" 
+                alt="{{ service.name }}">
+           
                 <div class="card-body">
                     <h5 class="card-title">{{ service.name }}</h5>
                     <p class="card-text">{{ service.description }}</p>

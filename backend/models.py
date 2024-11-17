@@ -41,9 +41,11 @@ class Service(db.Model):
     price = db.Column(db.Float, nullable=False)      # Base price for this service
     description = db.Column(db.Text)
     time_required = db.Column(db.Integer)            # Time in minutes
+    image = db.Column(db.String(100), nullable=True)  # Image filename (e.g., "plumbing.jpg")
 
     # Relationship to access service requests for this service
     service_requests = db.relationship('ServiceRequest', back_populates='service', lazy=True)
+
 
 class ServiceRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)

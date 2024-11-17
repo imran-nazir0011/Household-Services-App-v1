@@ -1,5 +1,11 @@
 from . import *
+
+
+
 def admin_routes(app:Flask ):
+    # Define the folder where images will be saved
+    UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'images')
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     # Admin login route
     @app.route('/admin/login', methods=['GET', 'POST'])
     def admin_login():
@@ -116,45 +122,34 @@ def admin_routes(app:Flask ):
         # Fetch all service requests
         service_requests = ServiceRequest.query.all()
         return render_template('admin/manage_service_requests.html', service_requests=service_requests)
-
-    # Admin view details of a Service Request
-    @app.route('/admin/service_requests/<int:request_id>')
-    def view_service_request(request_id):
-        if session.get('role') != 'Admin':
-            return redirect(url_for('admin_login'))  # Redirect to admin_login if not an admin
-
-        service_request = ServiceRequest.query.get_or_404(request_id)
-        return render_template('admin/view_service_request.html', request=service_request)
-
-    # Admin can change the status of a Service Request
-    @app.route('/admin/service_requests/<int:request_id>/update_status', methods=['POST'])
-    def update_service_request_status(request_id):
-        if session.get('role') != 'Admin':
-            return redirect(url_for('admin_login'))  # Redirect to admin_login if not an admin
-
+    
+    @app.route('/customer/service_request_action/<int:request_id>', methods=['POST'])
+    def service_request_action(request_id):
+        # Fetch the service request by ID
         service_request = ServiceRequest.query.get_or_404(request_id)
 
-        # Update the status based on the form input
-        new_status = request.form['status']
-        service_request.service_status = new_status
-        db.session.commit()
+        # Determine the action from the form submission
+        action = request.form.get('action')
 
-        flash(f"Service request status updated to {new_status}.", "success")
-        return redirect(url_for('view_service_request', request_id=request_id))
+        if action == 'update_status':
+            # Handle status update
+            new_status = request.form.get('status')
+            if new_status:
+                service_request.service_status = new_status
+                db.session.commit()
+                flash(f"Service request #{request_id} status updated to '{new_status}'.", "success")
+            else:
+                flash("No status provided for the update.", "danger")
 
-    # Admin can delete a service request (if necessary)
-    @app.route('/admin/service_requests/<int:request_id>/delete', methods=['POST'])
-    def delete_service_request(request_id):
-        if session.get('role') != 'Admin':
-            return redirect(url_for('admin_login'))  # Redirect to admin_login if not an admin
+        elif action == 'delete':
+            # Handle delete request
+            db.session.delete(service_request)
+            db.session.commit()
+            flash(f"Service request #{request_id} has been deleted.", "success")
 
-        service_request = ServiceRequest.query.get_or_404(request_id)
-
-        db.session.delete(service_request)
-        db.session.commit()
-
-        flash("Service request deleted.", "success")
         return redirect(url_for('manage_service_requests'))
+
+
 
     # Admin can manage Services (Add/Edit/Delete Services)
     @app.route('/admin/services')
@@ -165,6 +160,9 @@ def admin_routes(app:Flask ):
         services = Service.query.all()
         return render_template('admin/manage_services.html', services=services)
 
+    # Check if the uploaded file is an allowed image type
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     @app.route('/admin/services/add', methods=['GET', 'POST'])
     def add_service():
@@ -177,12 +175,21 @@ def admin_routes(app:Flask ):
             description = request.form['description']
             time_required = request.form['time_required']
 
+            # Handle image upload
+            image_filename = None
+            if 'image' in request.files:
+                image = request.files['image']
+                if image and allowed_file(image.filename):
+                    image_filename = secure_filename(f"{service_name}.{image.filename.rsplit('.', 1)[1].lower()}")
+                    image.save(os.path.join(UPLOAD_FOLDER, image_filename))
+
             # Create new service
             new_service = Service(
                 name=service_name,
                 price=price,
                 description=description,
-                time_required=time_required
+                time_required=time_required,
+                image=image_filename  # Save the image filename in the database
             )
             
             db.session.add(new_service)
@@ -192,6 +199,8 @@ def admin_routes(app:Flask ):
             return redirect(url_for('manage_services'))
         
         return render_template('admin/add_edit_service.html', service=None)
+
+
 
     @app.route('/admin/services/<int:service_id>/edit', methods=['GET', 'POST'])
 

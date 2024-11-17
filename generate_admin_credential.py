@@ -1,5 +1,5 @@
 from app import app, db
-from models import Admin
+from backend.models import Admin
 from werkzeug.security import generate_password_hash
 
 # Set up the app context to interact with the database

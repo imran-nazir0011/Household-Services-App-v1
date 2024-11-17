@@ -42,6 +42,32 @@ def  customer_routes(app:Flask ):
             # Fetch service requests for this customer
             service_requests = ServiceRequest.query.filter_by(customer_id=user_id).all()
             return render_template('customer/view_service_requests.html', requests=service_requests)
+        
+        @app.route('/customer/cancel_service_request/<int:request_id>', methods=['POST'])
+        def cancel_service_request(request_id):
+            # Ensure the user is logged in
+            user_id = session.get('user_id')
+            if not user_id:
+                flash("You must be logged in to cancel a service request.", "danger")
+                return redirect(url_for('login'))
+
+            # Fetch the service request
+            service_request = ServiceRequest.query.filter_by(id=request_id, customer_id=user_id).first()
+            if not service_request:
+                flash("Service request not found or you do not have permission to cancel it.", "danger")
+                return redirect(url_for('view_service_requests'))
+
+            # Ensure the service request is in 'pending' status
+            if service_request.service_status != 'pending':
+                flash("Only pending service requests can be canceled.", "warning")
+                return redirect(url_for('view_service_requests'))
+
+            # Cancel the service request
+            service_request.service_status = 'canceled'
+            db.session.commit()
+
+            flash("The service request has been successfully canceled.", "success")
+            return redirect(url_for('view_service_requests'))
 
         # Create a New Service Request
         @app.route('/customer/create_service_request', methods=['GET', 'POST'])
