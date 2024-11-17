@@ -30,7 +30,6 @@ class ServiceProfessional(db.Model):
     service_type = db.Column(db.String(50))  # Specifies the type of service they provide, e.g., "plumber"
     experience = db.Column(db.Integer)       # Experience in years
     verified = db.Column(db.Boolean, default=False)
-    verification_requested = db.Column(db.Boolean, default=False)  # Track verification requests
 
     # Relationship to access service requests assigned to the professional
     service_requests = db.relationship('ServiceRequest', back_populates='professional', lazy=True)

@@ -64,7 +64,7 @@ def  customer_routes(app:Flask ):
                 new_request = ServiceRequest(
                     service_id=service_id,
                     customer_id=user_id,
-                    date_of_request=date_of_request,
+                    date_of_request=datetime.strptime(date_of_request, '%Y-%m-%d').date(),
                     service_status='pending'  # Set the default status
                 )
 

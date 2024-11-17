@@ -45,18 +45,8 @@ def admin_routes(app:Flask ):
         # Fetch all customers
         customers = Customer.query.all()
         return render_template('admin/manage_customers.html', customers=customers)
-
-    # View Customer Details
-    @app.route('/admin/customer/<int:customer_id>', methods=['GET'])
-    def view_customer(customer_id):
-        if session.get('role') != 'Admin':
-            return redirect(url_for('login'))  # Redirect to login if not an admin
-
-        # Fetch customer by ID
-        customer = Customer.query.get_or_404(customer_id)
-        return render_template('admin/view_customer.html', customer=customer)
-
-    # Delete Customer
+    
+     # Delete Customer
     @app.route('/admin/delete_customer/<int:customer_id>', methods=['POST'])
     def delete_customer(customer_id):
         if session.get('role') != 'Admin':
@@ -74,7 +64,10 @@ def admin_routes(app:Flask ):
 
         # Redirect back to the customers management page
         return redirect(url_for('manage_customers'))
+   
 
+
+   
     # View and Approve/Reject Service Professional Verification Requests
     @app.route('/admin/service_professionals')
     def manage_service_professionals():
@@ -85,23 +78,33 @@ def admin_routes(app:Flask ):
         service_professionals = ServiceProfessional.query.all()
         return render_template('admin/manage_service_professionals.html', service_professionals=service_professionals)
 
-    # Admin verifies a Service Professional's profile
-    @app.route('/admin/service_professionals/<int:professional_id>/verify', methods=['POST'])
-    def verify_service_professional(professional_id):
+    @app.route('/admin/service_professionals/<int:professional_id>/<string:action>', methods=['POST'])
+    def manage_service_professional(professional_id, action):
         if session.get('role') != 'Admin':
             return redirect(url_for('admin_login'))  # Redirect to admin_login if not an admin
 
         service_professional = ServiceProfessional.query.get_or_404(professional_id)
-        
-        # If the service professional has requested verification
-        if service_professional.verification_requested:
-            service_professional.verified = True  # Mark as verified
-            service_professional.verification_requested = False  # Remove verification request
+
+        if action == "approve":
+            # Approve the service professional
+            service_professional.verified = True
+            service_professional.verification_requested = False  # Clear the verification request
             db.session.commit()
-            flash(f"Service professional {service_professional.name} has been verified.", "success")
+            flash(f"Service professional {service_professional.name} has been approved.", "success")
+        elif action == "reject":
+            # Reject the service professional
+            service_professional.verified = False
+            service_professional.verification_requested = False  # Clear the verification request
+            db.session.commit()
+            flash(f"Service professional {service_professional.name} has been rejected.", "danger")
+        elif action == "delete":
+            # Delete the service professional
+            db.session.delete(service_professional)
+            db.session.commit()
+            flash(f"Service professional {service_professional.name} has been deleted.", "success")
         else:
-            flash(f"Service professional {service_professional.name} has not requested verification.", "danger")
-        
+            flash("Invalid action.", "warning")
+
         return redirect(url_for('manage_service_professionals'))
 
     # Admin view all Service Requests (Pending, Assigned, and Completed)
@@ -163,7 +166,6 @@ def admin_routes(app:Flask ):
         return render_template('admin/manage_services.html', services=services)
 
 
-    # Admin can add a new Service
     @app.route('/admin/services/add', methods=['GET', 'POST'])
     def add_service():
         if session.get('role') != 'Admin':
@@ -189,10 +191,10 @@ def admin_routes(app:Flask ):
             flash(f"Service {new_service.name} added successfully.", "success")
             return redirect(url_for('manage_services'))
         
-        return render_template('admin/add_service.html')
+        return render_template('admin/add_edit_service.html', service=None)
 
-    # Admin can edit an existing service
     @app.route('/admin/services/<int:service_id>/edit', methods=['GET', 'POST'])
+
     def edit_service(service_id):
         if session.get('role') != 'Admin':
             return redirect(url_for('admin_login'))  # Redirect to admin_login if not an admin
@@ -209,9 +211,8 @@ def admin_routes(app:Flask ):
             flash(f"Service {service.name} updated successfully.", "success")
             return redirect(url_for('manage_services'))
 
-        return render_template('admin/edit_service.html', service=service)
+        return render_template('admin/add_edit_service.html', service=service)
 
-    # Admin can delete a service
     @app.route('/admin/services/<int:service_id>/delete', methods=['POST'])
     def delete_service(service_id):
         if session.get('role') != 'Admin':
