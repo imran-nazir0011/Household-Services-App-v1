@@ -40,13 +40,15 @@
                             <td>{{ request.service.name }}</td>
                             <td>{{ request.date_of_request.strftime('%Y-%m-%d') }}</td>
                             <td>
-                                {% if request.service_status == 'pending' %}
-                                    <span class="badge bg-warning">Pending</span>
-                                {% elif request.service_status == 'completed' %}
-                                    <span class="badge bg-success">Completed</span>
-                                {% else %}
-                                    <span class="badge bg-danger">Rejected</span>
-                                {% endif %}
+                                <!-- Status Badge with Dynamic Colors -->
+                                <span class="badge 
+                                    {% if request.service_status == 'pending' %}bg-warning
+                                    {% elif request.service_status == 'completed' %}bg-success
+                                    {% elif request.service_status == 'assigned' %}bg-info
+                                    {% elif request.service_status == 'canceled' %}bg-secondary
+                                    {% else %}bg-danger{% endif %}">
+                                    {{ request.service_status | capitalize }}
+                                </span>
                             </td>
                             <td>{{ request.remarks if request.remarks else 'N/A' }}</td>
                             <td>

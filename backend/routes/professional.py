@@ -76,25 +76,24 @@ def professional_routes(app:Flask ):
     @app.route('/professional/profile', methods=['GET', 'POST'])
     def professional_profile():
         professional = ServiceProfessional.query.get(session['user_id'])
+        services = Service.query.all()  # Fetch all services
 
         if request.method == 'POST':
-            # Get updated profile details from the form
+            # Update profile details
             professional.name = request.form['name']
             professional.email = request.form['email']
             professional.phone = request.form['phone']
-            professional.service_type = request.form['service_type']
             professional.experience = request.form['experience']
 
-            # If the professional clicks to apply for verification
-            if 'apply_verification' in request.form and not professional.verified:
-                professional.verification_requested = True  # Set to True to indicate they have requested verification
-                db.session.commit()
-                flash("Your verification request has been sent to the admin for review.", "success")
+            # Allow service type update only if it's currently "None"
+            if professional.service_type == "None" or not professional.service_type:
+                professional.service_type = request.form['service_type']
 
             db.session.commit()
             flash("Profile updated successfully!", "success")
 
-        return render_template('professional/profile.html', professional=professional)
+        return render_template('professional/profile.html', professional=professional, services=services)
+
 
     @app.route('/professional/summary')
     def professional_summary():

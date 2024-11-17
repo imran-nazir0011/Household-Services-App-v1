@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Personal Information</h5>
-                
+
                 <!-- Name -->
                 <div class="form-group">
                     <label for="name">Full Name</label>
@@ -39,13 +39,14 @@
                 <!-- Service Type -->
                 <div class="form-group">
                     <label for="service_type">Service Type</label>
-                    <select class="form-control" id="service_type" name="service_type" required disabled>
-                        <option value="Plumbing" {% if professional.service_type == 'Plumbing' %}selected{% endif %}>Plumbing</option>
-                        <option value="Electrical" {% if professional.service_type == 'Electrical' %}selected{% endif %}>Electrical</option>
-                        <option value="Cleaning" {% if professional.service_type == 'Cleaning' %}selected{% endif %}>Cleaning</option>
-                        <option value="Gardening" {% if professional.service_type == 'Gardening' %}selected{% endif %}>Gardening</option>
-                        <option value="Carpentry" {% if professional.service_type == 'Carpentry' %}selected{% endif %}>Carpentry</option>
-                        <option value="Painting" {% if professional.service_type == 'Painting' %}selected{% endif %}>Painting</option>
+                    <select class="form-control" id="service_type" name="service_type" required 
+                            {% if professional.service_type != 'None' and professional.service_type %}disabled{% endif %}>
+                        <option value="None" {% if not professional.service_type or professional.service_type == 'None' %}selected{% endif %}>None</option>
+                        {% for service in services %}
+                        <option value="{{ service.name }}" {% if professional.service_type == service.name %}selected{% endif %}>
+                            {{ service.name }}
+                        </option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -67,9 +68,9 @@
         <div class="card-body">
             <h5 class="card-title">Verification Status</h5>
             {% if professional.verified %}
-                <p class="badge badge-success">Verified</p>
+                <p class="badge bg-success">Verified</p>
             {% else %}
-                <p class="badge badge-warning">Not Verified</p>
+                <p class="badge bg-warning">Not Verified</p>
             {% endif %}
         </div>
     </div>
@@ -81,8 +82,13 @@
         document.getElementById('name').disabled = false;
         document.getElementById('email').disabled = false;
         document.getElementById('phone').disabled = false;
-        document.getElementById('service_type').disabled = false;
         document.getElementById('experience').disabled = false;
+
+        // Enable service type dropdown only if its value is "None"
+        const serviceTypeField = document.getElementById('service_type');
+        if (serviceTypeField.value === "None") {
+            serviceTypeField.disabled = false;
+        }
 
         // Show Save button and hide Edit button
         document.getElementById('edit-btn').classList.add('d-none');
