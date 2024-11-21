@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import and_, or_
 
 db = SQLAlchemy()
 
@@ -16,6 +17,14 @@ class Customer(db.Model):
     email = db.Column(db.String(100), unique=True)
     phone = db.Column(db.String(15))
     address = db.Column(db.String(255))
+    
+    # Verification status attribute
+    verification_status = db.Column(
+        db.String(15),  # Allows storing statuses as strings
+        default='not verified',  # Default value
+        nullable=False  # Field is required
+    )
+
 
     # Relationship to access service requests directly from a customer
     service_requests = db.relationship('ServiceRequest', back_populates='customer', lazy=True)

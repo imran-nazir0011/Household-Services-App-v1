@@ -1,53 +1,67 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}
+Admin Dashboard
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4">Admin Dashboard</h2>
+<div class="container mt-4">
     <div class="row">
-        <!-- Manage Customers -->
+        <div class="col-md-12 text-center">
+            <h2 class="mb-4">Admin Dashboard</h2>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Manage Customers Section -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Customers</h5>
-                    <p class="card-text">View, approve, or block customers.</p>
+                <div class="card-header text-center bg-primary text-white">
+                    <i class="bi bi-people"></i> Manage Customers
+                </div>
+                <div class="card-body text-center">
+                    <p>View, approve, or block customers.</p>
                     <a href="{{ url_for('manage_customers') }}" class="btn btn-primary">Manage Customers</a>
                 </div>
             </div>
         </div>
 
-        <!-- Manage Service Professionals -->
+        <!-- Manage Service Professionals Section -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Service Professionals</h5>
-                    <p class="card-text">View, approve, or reject service professionals.</p>
-                    <a href="{{ url_for('manage_service_professionals') }}" class="btn btn-primary">Manage Service Professionals</a>
+                <div class="card-header text-center bg-success text-white">
+                    <i class="bi bi-person-check"></i> Manage Service Professionals
+                </div>
+                <div class="card-body text-center">
+                    <p>View, approve, or reject service professionals.</p>
+                    <a href="{{ url_for('manage_service_professionals') }}" class="btn btn-success">Manage Professionals</a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
-        <!-- Manage Services -->
+        <!-- Manage Services Section -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Services</h5>
-                    <p class="card-text">Create, update, or delete services offered on the platform.</p>
-                    <a href="{{ url_for('manage_services') }}" class="btn btn-primary">Manage Services</a>
+                <div class="card-header text-center bg-warning text-dark">
+                    <i class="bi bi-gear"></i> Manage Services
+                </div>
+                <div class="card-body text-center">
+                    <p>Create, update, or delete services offered on the platform.</p>
+                    <a href="{{ url_for('manage_services') }}" class="btn btn-warning">Manage Services</a>
                 </div>
             </div>
         </div>
 
-        <!-- Manage Service Requests -->
+        <!-- Manage Service Requests Section -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Manage Service Requests</h5>
-                    <p class="card-text">View and manage pending, assigned, or completed service requests.</p>
-                    <a href="{{ url_for('manage_service_requests') }}" class="btn btn-primary">Manage Service Requests</a>
+                <div class="card-header text-center bg-danger text-white">
+                    <i class="bi bi-file-earmark-text"></i> Manage Service Requests
+                </div>
+                <div class="card-body text-center">
+                    <p>View and manage pending, assigned, or completed service requests.</p>
+                    <a href="{{ url_for('manage_service_requests') }}" class="btn btn-danger">Manage Requests</a>
                 </div>
             </div>
         </div>

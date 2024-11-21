@@ -1,44 +1,42 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Service Professional Dashboard{% endblock %}
+{% block title %}
+Service Professional Dashboard
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
+<div class="container mt-4">
+    <div class="row mt-3">
+        <div class="col-md-12 text-end">
+            <a href="{{ url_for('professional_profile') }}" class="btn btn-primary">Profile</a>
+        </div>
+    </div>
+    <div class="row mt-4">
         <!-- Pending Requests Section -->
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Pending Service Requests</h5>
-                    <p class="card-text">View and respond to new service requests from customers.</p>
-                    <a href="{{ url_for('view_pending_requests') }}" class="btn btn-primary">Pending Requests</a>
+                <div class="card-header text-center bg-primary text-white">
+                    <i class="bi bi-clock-history"></i> Pending Service Requests
+                </div>
+                <div class="card-body text-center">
+                    <p>View and respond to new service requests from customers.</p>
+                    <a href="{{ url_for('view_pending_requests') }}" class="btn btn-primary">View Requests</a>
                 </div>
             </div>
         </div>
-
         <!-- Active Requests Section -->
-        <div class="col-md-6 mb-4">
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Accepted Requests</h5>
-                    <p class="card-text">Manage requests that you have accepted and are currently working on.</p>
-                    <a href="{{ url_for('view_accepted_requests') }}" class="btn btn-primary">Accepted Requests</a>
+                <div class="card-header text-center bg-success text-white">
+                    <i class="bi bi-tools"></i> Accepted Requests
+                </div>
+                <div class="card-body text-center">
+                    <p>Manage requests that you have accepted and are currently working on.</p>
+                    <a href="{{ url_for('view_accepted_requests') }}" class="btn btn-success">Manage Requests</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Profile Section -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">My Profile</h5>
-                    <p class="card-text">Update your profile information and view your reviews.</p>
-                    <a href="{{ url_for('professional_profile') }}" class="btn btn-info">Profile</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div>
 {% endblock %}

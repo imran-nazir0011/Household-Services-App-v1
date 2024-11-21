@@ -1,42 +1,55 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Customer Dashboard{% endblock %}
+{% block title %}
+Customer Dashboard
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <br>
+<div class="container mt-4">
     <div class="row">
+        <div class="col-md-12 text-end">
+            <a href="{{ url_for('customer_profile') }}" class="btn btn-primary">Profile</a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <h2 class="text-center">Welcome, {{ customer.name }}!</h2>
+        </div>
+    </div>
+    <div class="row mt-3">
         <!-- Available Services Section -->
-        <div class="col-md-6 mb-4">
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Available Services</h5>
-                    <p class="card-text">Browse and book services based on your needs.</p>
+                <div class="card-header text-center bg-primary text-white">
+                    <i class="bi bi-gear-fill"></i> Available Services
+                </div>
+                <div class="card-body text-center">
+                    <p>Explore the services we offer.</p>
                     <a href="{{ url_for('view_services') }}" class="btn btn-primary">View Services</a>
                 </div>
             </div>
         </div>
-
-        <!-- Active Requests Section -->
-        <div class="col-md-6 mb-4">
+        <!-- My Service Requests Section -->
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">My Service Requests</h5>
-                    <p class="card-text">Track your active service requests and view their statuses.</p>
-                    <a href="{{ url_for('view_service_requests') }}" class="btn btn-primary">My Requests</a>
+                <div class="card-header text-center bg-success text-white">
+                    <i class="bi bi-list-check"></i> My Service Requests
+                </div>
+                <div class="card-body text-center">
+                    <p>Check the status of your service requests.</p>
+                    <a href="{{ url_for('view_service_requests') }}" class="btn btn-success">View Requests</a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- New Service Request Section -->
-    <div class="row">
-        <div class="col-md-12">
+        <!-- Create a New Service Request Section -->
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Create a New Service Request</h5>
-                    <p class="card-text">Book a service by selecting an available option and entering details.</p>
-                    <a href="{{ url_for('create_service_request') }}" class="btn btn-success">New Request</a>
+                <div class="card-header text-center bg-warning text-dark">
+                    <i class="bi bi-plus-circle"></i> Create a New Service Request
+                </div>
+                <div class="card-body text-center">
+                    <p>Submit a request for a new service.</p>
+                    <a href="{{ url_for('create_service_request') }}" class="btn btn-warning">Create Request</a>
                 </div>
             </div>
         </div>

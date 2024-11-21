@@ -3,43 +3,43 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="my-4">My Profile</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">My Profile</h2>
 
     <!-- Profile Form -->
     <form method="POST" action="{{ url_for('professional_profile') }}">
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Personal Information</h5>
+                <h5 class="card-title text-center mb-3">Personal Information</h5>
 
                 <!-- Name -->
-                <div class="form-group">
-                    <label for="name">Full Name</label>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ professional.name }}" required disabled>
                 </div>
 
                 <!-- Username -->
-                <div class="form-group">
-                    <label for="username">Username</label>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username" value="{{ professional.username }}" required disabled>
                 </div>
 
                 <!-- Email -->
-                <div class="form-group">
-                    <label for="email">Email Address</label>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ professional.email }}" required disabled>
                 </div>
 
                 <!-- Phone Number -->
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
                     <input type="text" class="form-control" id="phone" name="phone" value="{{ professional.phone }}" required disabled>
                 </div>
 
                 <!-- Service Type -->
-                <div class="form-group">
-                    <label for="service_type">Service Type</label>
-                    <select class="form-control" id="service_type" name="service_type" required 
+                <div class="mb-3">
+                    <label for="service_type" class="form-label">Service Type</label>
+                    <select class="form-select" id="service_type" name="service_type" required 
                             {% if professional.service_type != 'None' and professional.service_type %}disabled{% endif %}>
                         <option value="None" {% if not professional.service_type or professional.service_type == 'None' %}selected{% endif %}>None</option>
                         {% for service in services %}
@@ -51,21 +51,23 @@
                 </div>
 
                 <!-- Experience -->
-                <div class="form-group">
-                    <label for="experience">Years of Experience</label>
+                <div class="mb-3">
+                    <label for="experience" class="form-label">Years of Experience</label>
                     <input type="number" class="form-control" id="experience" name="experience" value="{{ professional.experience }}" required disabled>
                 </div>
 
                 <!-- Edit and Save Buttons -->
-                <button type="button" class="btn btn-secondary" id="edit-btn" onclick="enableEditMode()">Edit</button>
-                <button type="submit" class="btn btn-primary d-none" id="save-btn">Save</button>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-secondary me-2" id="edit-btn" onclick="enableEditMode()">Edit</button>
+                    <button type="submit" class="btn btn-primary d-none" id="save-btn">Save</button>
+                </div>
             </div>
         </div>
     </form>
 
     <!-- Verification Status -->
-    <div class="card mt-4">
-        <div class="card-body">
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body text-center">
             <h5 class="card-title">Verification Status</h5>
             {% if professional.verified %}
                 <p class="badge bg-success">Verified</p>

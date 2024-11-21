@@ -15,33 +15,47 @@ def professional_routes(app:Flask ):
 
         return render_template('professional/dashboard.html', professional=professional)
 
-    # View Pending Requests for the Service Professional
-    @app.route('/professional/pending_requests')
+    @app.route('/professional/pending_requests', methods=['GET', 'POST'])
     def view_pending_requests():
         # Fetch the logged-in professional's ID from the session
         user_id = session.get('user_id')
         if not user_id:
             return redirect(url_for('login'))  # Redirect to login if not logged in
 
-        # Fetch pending service requests assigned to this professional
-        pending_requests = ServiceRequest.query.filter_by(professional_id=None, service_status='pending').all()
+        # Get the ServiceProfessional object for the logged-in user
+        professional = ServiceProfessional.query.get(user_id)
+        if not professional or not professional.verified:
+            flash("You are not verified as a professional or you don't exist!", "danger")
+            return render_template('professional/pending_requests.html')  # Stay on the current page with a flash message
+
+        if request.method == 'POST':
+            # Action to accept the request
+            request_id = request.form.get('request_id')
+            service_request = ServiceRequest.query.get(request_id)
+            if service_request:
+                # Update the service request status to 'assigned' and assign the professional
+                service_request.service_status = 'assigned'
+                service_request.professional_id = user_id  # Assign the logged-in professional to the request
+                db.session.commit()
+                flash("Service request accepted.", "success")
+            else:
+                flash("Request not found.", "danger")
+
+            return redirect(url_for('view_pending_requests'))  # After action, reload the page
+
+        # Fetch the service type of the professional
+        service_type = professional.service_type
+
+        # Fetch pending service requests that match the professional's service type
+        pending_requests = ServiceRequest.query.filter_by(
+            professional_id=None,  # Only requests that are not assigned yet
+            service_status='pending',  # Only pending requests
+            service_id=Service.query.filter_by(name=service_type).first().id  # Filter by service type
+        ).all()
 
         return render_template('professional/pending_requests.html', requests=pending_requests)
 
-    @app.route('/professional/requests/<int:request_id>/accept')
-    def professional_accept_request(request_id):
-        # Fetch the service request by ID
-        service_request = ServiceRequest.query.get(request_id)
-        if service_request:
-            # Update the service request status to 'assigned' and assign the professional
-            service_request.service_status = 'assigned'
-            service_request.professional_id = session['user_id']  # Assign the logged-in professional to the request
-            db.session.commit()
-            flash("Service request accepted.", "success")
-        else:
-            flash("Request not found.", "danger")
-        
-        return redirect(url_for('view_pending_requests'))
+
 
     # View Accepted Requests for the Service Professional
     @app.route('/professional/accepted_requests')

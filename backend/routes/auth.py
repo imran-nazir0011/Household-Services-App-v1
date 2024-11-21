@@ -88,4 +88,67 @@ def auth_routes(app:Flask ):
                 return redirect(url_for('login'))
 
             return render_template('auth/register.html')
+        
+        @app.route('/search', methods=['GET'])
+        def search():
+            if 'query' not in request.args or 'type' not in request.args:
+                flash("Please enter a search query.", "warning")
+                if session.get('role') == 'Admin':
+                    return redirect(url_for('admin_dashboard'))
+                elif session.get('role') == 'Customer':
+                    return redirect(url_for('customer_dashboard'))
+                elif session.get('role') == 'ServiceProfessional':
+                    return redirect(url_for('professional_dashboard'))
+                else:
+                    return redirect(url_for('index'))
 
+            query = request.args['query']
+            search_type = request.args['type']
+
+            results = []
+
+            if session.get('role') == 'Admin':
+                if search_type == 'customers':
+                    results = Customer.query.filter(Customer.name.contains(query) | Customer.email.contains(query)).all()
+                    return render_template('admin/manage_customers.html', customers=results)
+                elif search_type == 'professionals':
+                    results = ServiceProfessional.query.filter(ServiceProfessional.name.contains(query)).all()
+                    return render_template('admin/manage_service_professionals.html', service_professionals=results)
+                elif search_type == 'requests':
+                    # Assuming query is the ID or status
+                    results = ServiceRequest.query.filter(ServiceRequest.id.contains(query) | ServiceRequest.service_status.contains(query)).all()
+                    return render_template('admin/manage_service_requests.html', service_requests=results)
+                elif search_type == 'services':
+                    results = Service.query.filter(Service.name.contains(query) | Service.category.contains(query)).all()
+                    return render_template('admin/manage_services.html', services=results)
+                else:
+                    flash("Invalid search type.", "danger")
+                    return redirect(url_for('admin_dashboard'))
+
+            elif session.get('role') == 'Customer':
+                if search_type == 'services':
+                    results = Service.query.filter(Service.name.contains(query)).all()
+                    return render_template('customer/view_services.html', services=results)
+                elif search_type == 'requests':
+                    # Show only the current customer's requests
+
+                    results = ServiceRequest.query.filter(and_(ServiceRequest.customer_id == session.get('user_id'),Service.name.ilike(f"%{query}%"))).all()
+
+                    return render_template('customer/view_service_requests.html', requests=results)
+
+                else:
+                    flash("Invalid search type.", "danger")
+                    return redirect(url_for('customer_dashboard'))
+
+            elif session.get('role') == 'ServiceProfessional':
+                if search_type == 'requests':
+                    # Show only the current professional's requests
+                    results = ServiceRequest.query.filter(and_(ServiceRequest.professional_id == session.get('user_id')),Customer.name.ilike(f"%{query}%")).all()
+                    return render_template('professional/pending_requests.html', requests=results)
+                else:
+                    flash("Invalid search type.", "danger")
+                    return redirect(url_for('professional_dashboard'))
+
+            else:
+                flash("Invalid role or access denied.", "danger")
+                return redirect(url_for('index'))

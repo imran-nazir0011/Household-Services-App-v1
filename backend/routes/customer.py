@@ -104,6 +104,24 @@ def  customer_routes(app:Flask ):
             services = Service.query.all()
             return render_template('customer/create_service_request.html', services=services)
 
+        @ app.route('/customer/profile', methods=['GET', 'POST'])
+        def customer_profile():
+            user_id = session.get('user_id')
+            if not user_id:
+                return redirect(url_for('login'))  # Redirect to login if not logged in
+
+            customer = Customer.query.get(user_id)
+            if request.method == 'POST':
+                # Update editable fields
+                customer.email = request.form['email']
+                customer.phone = request.form['phone']
+                customer.address = request.form['address']
+                db.session.commit()
+                flash("Profile updated successfully!", "success")
+                return redirect(url_for('customer_profile'))
+
+            return render_template('customer/profile.html', customer=customer)
+
         @app.route('/customer/summary')
         def customer_summary():
-            return render_template('summary.html')
+                return render_template('summary.html')

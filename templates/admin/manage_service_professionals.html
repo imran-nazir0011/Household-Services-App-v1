@@ -18,11 +18,11 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Service Professionals Table -->
+    <!-- Service Professional Table -->
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered table-hover">
-                <thead>
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
                     <tr>
                         <th>ID</th>
                         <th>Username</th>
@@ -30,59 +30,55 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Service Type</th>
-                        <th>Experience</th>
+                        <th>Experience (Years)</th>
                         <th>Verification Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for professional in service_professionals %}
-                    <tr>
-                        <td>{{ professional.id }}</td>
-                        <td>{{ professional.username }}</td>
-                        <td>{{ professional.name }}</td>
-                        <td>{{ professional.email }}</td>
-                        <td>{{ professional.phone }}</td>
-                        <td>{{ professional.service_type }}</td>
-                        <td>{{ professional.experience }} years</td>
-                        <td>
-                            {% if professional.verified %}
-                                <span class="badge bg-success">Verified</span>
-                            {% else %}
-                                <span class="badge bg-warning">Pending</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                          
-                            {% if not professional.verified %}
-                                <!-- Approve action -->
-                                <form action="{{ url_for('manage_service_professional', professional_id=professional.id, action='approve') }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to approve this service professional?')">Approve</button>
+                        <tr>
+                            <td>{{ professional.id }}</td>
+                            <td>{{ professional.username }}</td>
+                            <td>{{ professional.name }}</td>
+                            <td>{{ professional.email }}</td>
+                            <td>{{ professional.phone }}</td>
+                            <td>{{ professional.service_type }}</td>
+                            <td>{{ professional.experience }}</td>
+                            <td>
+                                {% if professional.verified %}
+                                    <span class="badge bg-success">Verified</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Not Verified</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- Form for actions -->
+                                <form action="{{ url_for('manage_service_professionals') }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="professional_id" value="{{ professional.id }}">
+                                    {% if not professional.verified %}
+                                        <button type="submit" name="action" value="approve" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to approve this professional?')">
+                                            Approve
+                                        </button>
+                                    {% else %}
+                                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to reject this professional?')">
+                                        Reject
+                                    </button>
+                                    {% endif %}
+                                    <button type="submit" name="action" value="delete" class="btn btn-sm btn-warning" onclick="return confirm('Are you sure you want to delete this professional?')">
+                                        Delete
+                                    </button>
                                 </form>
-
-                                <!-- Reject action -->
-                                <form action="{{ url_for('manage_service_professional', professional_id=professional.id, action='reject') }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this service professional?')">Reject</button>
-                                </form>
-                            {% endif %}
-
-                            <!-- Delete action -->
-                            <form action="{{ url_for('manage_service_professional', professional_id=professional.id, action='delete') }}" method="POST" style="display: inline;">
-                                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to delete this service professional?')">Delete</button>
-                            </form>
-
-                         
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     {% else %}
-                    <tr>
-                        <td colspan="9" class="text-center">No service professionals found</td>
-                    </tr>
+                        <tr>
+                            <td colspan="9" class="text-center">No service professionals found.</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
 {% endblock %}

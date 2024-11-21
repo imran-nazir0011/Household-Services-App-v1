@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+Customer Profile
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My Profile</h2>
+
+    <!-- Profile Form -->
+    <form method="POST" action="{{ url_for('customer_profile') }}">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-3">Personal Information</h5>
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" value="{{ customer.name }}" disabled>
+                </div>
+
+                <!-- Username -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" value="{{ customer.username }}" disabled>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ customer.email }}" disabled>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ customer.phone }}" disabled>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea class="form-control" id="address" name="address" rows="3" disabled>{{ customer.address }}</textarea>
+                </div>
+
+
+
+                <!-- Edit and Save Buttons -->
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="button" class="btn btn-secondary me-2" id="edit-btn" onclick="enableEditMode()">Edit</button>
+                    <button type="submit" class="btn btn-success d-none" id="save-btn">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+                                        <!-- Verification Status -->
+                                        <div class="card mt-4 shadow-sm">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title">Profile Status</h5>
+                                                {% if customer.verification_status == 'Verified' %}
+                                                    <p class="badge bg-success">Verified</p>
+                                                {% elif customer.verification_status == 'Blocked' %}
+                                                    <p class="badge bg-danger">Blocked</p>
+                                                {% else %}
+                                                    <p class="badge bg-warning">Not Verified</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+</div>
+
+<script>
+    function enableEditMode() {
+        // Enable form fields
+        document.getElementById('email').disabled = false;
+        document.getElementById('phone').disabled = false;
+        document.getElementById('address').disabled = false;
+
+        // Show Save button and hide Edit button
+        document.getElementById('edit-btn').classList.add('d-none');
+        document.getElementById('save-btn').classList.remove('d-none');
+    }
+</script>
+{% endblock %}

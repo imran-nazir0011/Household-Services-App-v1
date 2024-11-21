@@ -18,47 +18,63 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Customer Table -->
+    <!-- Customers Table -->
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered table-hover">
-                <thead>
+                <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Username</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Address</th>
+                        <th>Verification Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for customer in customers %}
-                    <tr>
-                        <td>{{ customer.id }}</td>
-                        <td>{{ customer.username }}</td>
-                        <td>{{ customer.name }}</td>
-                        <td>{{ customer.email }}</td>
-                        <td>{{ customer.phone }}</td>
-                        <td>{{ customer.address }}</td>
-                        <td>
-                                        <!-- Delete action with form for POST method -->
-                            <form action="{{ url_for('delete_customer', customer_id=customer.id) }}" method="POST" style="display:inline;">
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>{{ customer.id }}</td>
+                            <td>{{ customer.name }}</td>
+                            <td>{{ customer.email }}</td>
+                            <td>{{ customer.phone }}</td>
+                            <td>
+                                {% if customer.verification_status == 'verified' %}
+                                    <span class="badge bg-success">Verified</span>
+                                {% elif customer.verification_status == 'not_verified' %}
+                                    <span class="badge bg-warning">Not Verified</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Pending Verification</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- Action Form -->
+                                <form action="{{ url_for('manage_customers') }}" method="POST" style="display: inline;">
+                                    <input type="hidden" name="customer_id" value="{{ customer.id }}">
+
+                                    {% if customer.verification_status == 'not_verified' %}
+                                        <!-- Verify Action -->
+                                        <button type="submit" name="action" value="verify" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to verify this customer?')">Verify</button>
+                                    {% else %}
+                                        <!-- Reject Action -->
+                                        <button type="submit" name="action" value="reject" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to reject this customer?')">Reject</button>
+                                    {% endif %}
+
+                                    <!-- Delete Action -->
+                                    <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
+                                </form>
+
+                            </td>
+                        </tr>
                     {% else %}
-                    <tr>
-                        <td colspan="7" class="text-center">No customers found</td>
-                    </tr>
+                        <tr>
+                            <td colspan="6" class="text-center">No customers found</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
 {% endblock %}
-
