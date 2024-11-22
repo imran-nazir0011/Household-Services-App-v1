@@ -46,19 +46,24 @@
                             <td>{{ professional.service_type }}</td>
                             <td>{{ professional.experience }}</td>
                             <td>
+                               
                                 {% if professional.verified %}
                                     <span class="badge bg-success">Verified</span>
+                                {% elif professional.name == 'Deleted Professional' %}
+                                    <span class="badge bg-secondary">Deleted</span>
                                 {% else %}
                                     <span class="badge bg-warning">Not Verified</span>
                                 {% endif %}
+                                
                             </td>
                             <td>
+                                {% if professional.name != 'Deleted Professional' %}
                                 <!-- Form for actions -->
                                 <form action="{{ url_for('manage_service_professionals') }}" method="POST" class="d-inline">
                                     <input type="hidden" name="professional_id" value="{{ professional.id }}">
                                     {% if not professional.verified %}
                                         <button type="submit" name="action" value="approve" class="btn btn-sm btn-success" onclick="return confirm('Are you sure you want to approve this professional?')">
-                                            Approve
+                                            Verify
                                         </button>
                                     {% else %}
                                     <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to reject this professional?')">
@@ -69,6 +74,7 @@
                                         Delete
                                     </button>
                                 </form>
+                                {% endif %}
                             </td>
                         </tr>
                     {% else %}

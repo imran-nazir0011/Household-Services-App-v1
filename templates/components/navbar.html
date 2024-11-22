@@ -19,32 +19,6 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Navbar Links -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            {% if session.get('role') == 'Admin' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('manage_customers') }}">Manage Customers</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('manage_professionals') }}">Manage Professionals</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('manage_services') }}">Manage Services</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('manage_requests') }}">Manage Requests</a>
-            </li>
-            {% elif session.get('role') == 'Customer' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('view_service_requests') }}">My Requests</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('view_services') }}">Available Services</a>
-            </li>
-            {% elif session.get('role') == 'ServiceProfessional' %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('view_pending_requests') }}">Pending Requests</a>
-            </li>
-            {% endif %}
-  
             <!-- Login/Logout/Register Links -->
             {% if session.get('role') %}
             <li class="nav-item">
@@ -74,7 +48,8 @@
               <option value="services">Services</option>
               <option value="requests">My Requests</option>
               {% elif session.get('role') == 'ServiceProfessional' %}
-              <option value="requests">My Requests</option>
+              <option value="pending">Pending Service Requests</option>
+              <option value="requests">Accepted Requests</option>
               {% endif %}
             </select>
             <button class="btn btn-outline-success" type="submit">Search</button>

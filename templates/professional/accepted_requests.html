@@ -14,8 +14,12 @@
                     <th>Customer</th>
                     <th>Service</th>
                     <th>Date of Request</th>
+                    <th>Address</th>
                     <th>Service Status</th>
+                    <th>Remarks</th>
+                    {% if request.service_status == 'assigned' %}
                     <th>Action</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -24,14 +28,27 @@
                     <td>{{ request.customer.name }}</td>
                     <td>{{ request.service.name }}</td>
                     <td>{{ request.date_of_request.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ request.service_status }}</td>
+                    <td>{{ request.customer.address }}</td>
                     <td>
-                        {% if request.service_status == 'assigned' %}
-                        <a href="{{ url_for('professional_complete_request', request_id=request.id) }}" class="btn btn-primary btn-sm">Mark as Completed</a>
-                        {% elif request.service_status == 'completed' %}
-                        <span class="badge badge-success">Completed</span>
-                        {% endif %}
+                        
+                            {% if request.service_status == 'pending' %}
+                                <span class="badge bg-primary">Pending</span>
+                            {% elif request.service_status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif request.service_status == 'canceled' %}
+                                <span class="badge bg-warning">Canceled</span>
+                            {% endif %}
+                        
+                        
                     </td>
+                    <td>{{ request.remarks }}</td>
+                    {% if request.service_status == 'assigned' %}
+                    <td>
+                       
+                        <a href="{{ url_for('professional_complete_request', request_id=request.id) }}" class="btn btn-primary btn-sm">Mark as Completed</a>
+                        
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

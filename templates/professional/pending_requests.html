@@ -23,6 +23,7 @@
                 <tr>
                     <th>Customer</th>
                     <th>Service</th>
+                    <th>Address</th>
                     <th>Date of Request</th>
                     <th>Action</th>
                 </tr>
@@ -32,6 +33,7 @@
                 <tr>
                     <td>{{ request.customer.name }}</td>
                     <td>{{ request.service.name }}</td>
+                    <td>{{ request.customer.address}}</td>
                     <td>{{ request.date_of_request.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>
                         <form method="POST" action="{{ url_for('view_pending_requests') }}">

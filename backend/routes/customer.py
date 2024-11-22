@@ -64,6 +64,8 @@ def  customer_routes(app:Flask ):
 
             # Cancel the service request
             service_request.service_status = 'canceled'
+            service_request.remarks = 'Service request has been canceled by the customer.'
+
             db.session.commit()
 
             flash("The service request has been successfully canceled.", "success")
@@ -91,7 +93,8 @@ def  customer_routes(app:Flask ):
                     service_id=service_id,
                     customer_id=user_id,
                     date_of_request=datetime.strptime(date_of_request, '%Y-%m-%d').date(),
-                    service_status='pending'  # Set the default status
+                    service_status='pending',
+                    remarks='Service request is pending, awaiting professional assignment'
                 )
 
                 db.session.add(new_request)

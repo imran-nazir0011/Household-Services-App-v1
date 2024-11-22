@@ -29,6 +29,7 @@
                         <th>Service</th>
                         <th>Professional</th>
                         <th>Status</th>
+                        <th>Remarks</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -49,7 +50,10 @@
                             {{ service_request.service_status | capitalize }}
                         </span>
                         </td>
+                        <td>{{ service_request.remarks }}</td>
                         <td>
+
+                            
                             <!-- Cancel action (if not Completed or Canceled) -->
                             {% if service_request.service_status != 'completed' and service_request.service_status != 'canceled' %}
                             <form action="{{ url_for('manage_service_requests') }}" method="POST" class="d-inline">
@@ -64,19 +68,6 @@
                                 </button>
                             </form>
                             {% endif %}
-
-                            <!-- Option to delete request -->
-                            <form action="{{ url_for('manage_service_requests') }}" method="POST" class="d-inline">
-                                <input type="hidden" name="request_id" value="{{ service_request.id }}">
-                                <input type="hidden" name="action" value="delete">
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-outline-danger btn-sm" 
-                                    onclick="return confirm('Are you sure you want to delete this service request?')" 
-                                    {% if service_request.service_status == 'canceled' or service_request.service_status == 'completed' %} disabled {% endif %}>
-                                    Delete
-                                </button>
-                            </form>
                         </td>
                     </tr>
                     {% else %}

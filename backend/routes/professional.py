@@ -66,8 +66,10 @@ def professional_routes(app:Flask ):
             return redirect(url_for('login'))  # Redirect to login if not logged in
 
         # Fetch the accepted service requests assigned to this professional
-        accepted_requests = ServiceRequest.query.filter_by(professional_id=user_id, service_status='assigned').all()
-
+        accepted_requests = (ServiceRequest.query.filter(
+                                        ServiceRequest.professional_id == user_id,
+                                        ServiceRequest.service_status != 'pending'
+                                        ).all())
         return render_template('professional/accepted_requests.html', requests=accepted_requests)
 
     @app.route('/professional/requests/<int:request_id>/complete')
@@ -78,6 +80,7 @@ def professional_routes(app:Flask ):
             # Update the service request status to 'completed'
             service_request.service_status = 'completed'
             service_request.date_of_completion = datetime.utcnow()  # Record the time of completion
+            service_request.remarks = 'Service has been completed by the professional.'
             db.session.commit()
             flash("Service request marked as completed.", "success")
         else:

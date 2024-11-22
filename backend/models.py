@@ -19,11 +19,8 @@ class Customer(db.Model):
     address = db.Column(db.String(255))
     
     # Verification status attribute
-    verification_status = db.Column(
-        db.String(15),  # Allows storing statuses as strings
-        default='not verified',  # Default value
-        nullable=False  # Field is required
-    )
+    verification_status = db.Column(db.Boolean, default=False)
+
 
 
     # Relationship to access service requests directly from a customer

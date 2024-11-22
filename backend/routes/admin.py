@@ -54,18 +54,35 @@ def admin_routes(app:Flask ):
 
             if action == 'verify':
                 # Verify the customer
-                customer.verification_status = 'verified'
+                customer.verification_status = True
                 flash(f'Customer {customer.name} has been verified!', 'success')
 
             elif action== 'reject':
 
-                customer.verification_status = 'not_verified'
+                customer.verification_status = False
                 flash(f'Customer {customer.name} has been rejected!', 'danger')
 
             elif action == 'delete':
-                # Delete the customer
-                db.session.delete(customer)
-                flash(f'Customer {customer.name} has been deleted!', 'warning')
+                # Anonymize the customer data
+                temp = customer.name
+                customer.name = "Deleted Customer"
+                customer.username = f"deleted_{customer.id}"
+                customer.password = generate_password_hash("deleted")
+                customer.email = None
+                customer.phone = None
+                customer.address = None
+                customer.verification_status = False
+
+                # Cancel all pending service requests of the customer
+                if customer.service_requests:
+                    for req in customer.service_requests:
+                        if req.service_status not in ['completed','canceled']:  # Check if the service request is pending
+                            req.service_status = 'canceled'  # Update the status to canceled
+                            req.remarks = "Service request canceled as the customer is no longer active."
+                
+                flash(f'Customer {temp} has been anonymized, and their pending service requests have been canceled!', 'warning')
+
+               
 
             # Commit the changes
             db.session.commit()
@@ -100,10 +117,27 @@ def admin_routes(app:Flask ):
                 # Reject the service professional
                 service_professional.verified = False
                 flash(f"Service professional {service_professional.name} has been rejected.", "danger")
-            elif action == "delete":
-                # Delete the service professional
-                db.session.delete(service_professional)
-                flash(f"Service professional {service_professional.name} has been deleted.", "warning")
+            elif action == 'delete':
+                    # Anonymize the service professional data
+                    temp = service_professional.name
+                    service_professional.name = "Deleted Professional"
+                    service_professional.username = f"deleted_{service_professional.id}"
+                    service_professional.password = generate_password_hash("deleted")
+                    service_professional.email = None
+                    service_professional.phone = None
+                    service_professional.service_type = None
+                    service_professional.verified = False
+
+                    # Cancel all pending or ongoing service requests of the service professional
+                    if service_professional.service_requests:
+                        for req in service_professional.service_requests:
+                            if req.service_status not in ['completed','canceled']:  # Check if the service request is not completed
+                                req.service_status = 'canceled'  # Update the status to canceled
+                                req.remarks = "Service request canceled as the assigned service professional is no longer active."
+
+
+                    flash(f'Service professional {temp} has been anonymized, and their associated service requests have been canceled!', 'warning')
+
             else:
                 flash("Invalid action specified.", "warning")
 
@@ -145,12 +179,6 @@ def admin_routes(app:Flask ):
                 else:
                     flash("No status provided for the update.", "danger")
 
-            elif action == 'delete':
-                # Handle delete request
-                db.session.delete(service_request)
-                db.session.commit()
-                flash(f"Service request #{request_id} has been deleted.", "success")
-
             elif action == 'cancel':
                 # Handle cancel request
                 if service_request.service_status not in ['completed', 'canceled']:
@@ -189,12 +217,21 @@ def admin_routes(app:Flask ):
                 return redirect(url_for('edit_service', service_id=service_id))  # Redirect to the 'edit_service' route
 
             elif action == 'DELETE':
-                service_id = request.form.get('service_id')
-                service = Service.query.get_or_404(service_id)
-                db.session.delete(service)
-                db.session.commit()
-                flash(f"Service '{service.name}' deleted successfully.", "success")
-                return redirect(url_for('manage_services'))  # After deleting, go back to manage services
+                    service_id = request.form.get('service_id')
+                    service = Service.query.get_or_404(service_id)
+
+                    # Anonymize the service details
+                    service.name = "Deleted Service"
+                    service.price = 0.0
+                    service.description = "This service has been deleted."
+                    service.time_required = 0
+                    service.image = None
+
+                    # Commit the changes
+                    db.session.commit()
+
+                    flash(f"Service '{service.name}' has been anonymized and marked as deleted.", "warning")
+                    return redirect(url_for('manage_services'))
 
         return redirect(url_for('manage_services'))  # If no valid action, redirect to the manage services page
 

@@ -109,17 +109,17 @@ def auth_routes(app:Flask ):
 
             if session.get('role') == 'Admin':
                 if search_type == 'customers':
-                    results = Customer.query.filter(Customer.name.contains(query) | Customer.email.contains(query)).all()
+                    results = Customer.query.filter( or_(Customer.name.contains(query),Customer.address.contains(query))).all()
                     return render_template('admin/manage_customers.html', customers=results)
                 elif search_type == 'professionals':
-                    results = ServiceProfessional.query.filter(ServiceProfessional.name.contains(query)).all()
+                    results = ServiceProfessional.query.filter(or_(ServiceProfessional.name.contains(query),ServiceProfessional.email.contains(query))).all()
                     return render_template('admin/manage_service_professionals.html', service_professionals=results)
                 elif search_type == 'requests':
                     # Assuming query is the ID or status
-                    results = ServiceRequest.query.filter(ServiceRequest.id.contains(query) | ServiceRequest.service_status.contains(query)).all()
+                    results = ServiceRequest.query.join(Customer).join(Service).join(ServiceProfessional).filter(or_(ServiceRequest.service_status.contains(query),Customer.address.contains(query),ServiceProfessional.name.contains(query),Service.name.contains(query))).all()
                     return render_template('admin/manage_service_requests.html', service_requests=results)
                 elif search_type == 'services':
-                    results = Service.query.filter(Service.name.contains(query) | Service.category.contains(query)).all()
+                    results = Service.query.filter(Service.name.contains(query)|Service.price.contains(query)).all()
                     return render_template('admin/manage_services.html', services=results)
                 else:
                     flash("Invalid search type.", "danger")
@@ -131,9 +131,7 @@ def auth_routes(app:Flask ):
                     return render_template('customer/view_services.html', services=results)
                 elif search_type == 'requests':
                     # Show only the current customer's requests
-
-                    results = ServiceRequest.query.filter(and_(ServiceRequest.customer_id == session.get('user_id'),Service.name.ilike(f"%{query}%"))).all()
-
+                    results = (ServiceRequest.query.join(Service).filter(and_(ServiceRequest.customer_id == session.get('user_id'),Service.name.contains(query))).all())
                     return render_template('customer/view_service_requests.html', requests=results)
 
                 else:
@@ -141,10 +139,43 @@ def auth_routes(app:Flask ):
                     return redirect(url_for('customer_dashboard'))
 
             elif session.get('role') == 'ServiceProfessional':
-                if search_type == 'requests':
-                    # Show only the current professional's requests
-                    results = ServiceRequest.query.filter(and_(ServiceRequest.professional_id == session.get('user_id')),Customer.name.ilike(f"%{query}%")).all()
-                    return render_template('professional/pending_requests.html', requests=results)
+                if search_type == 'pending':
+
+                        results = ( 
+                                        ServiceRequest.query
+                                        
+                                        .join(Customer)
+                                        .filter(
+                                            and_
+                                            (
+                                                ServiceRequest.service_status == 'pending',
+                                                or_(
+                                                    Customer.address.contains(query),
+                                                    Customer.name.contains(query)
+                                                    )
+                                            )
+                                            )
+                                            .all())
+                        return render_template('professional/pending_requests.html', requests=results)
+                
+                elif search_type == 'requests':
+                    results = (
+                                    ServiceRequest.query
+
+                                    .join(Customer)
+                                    .filter(
+                                        
+                                            and_(
+                                                ServiceRequest.professional_id == session.get('user_id'),
+                                                ServiceRequest.service_status != 'pending',
+                                                or_(
+                                                    Customer.name.contains(query),
+                                                    Customer.address.contains(query)
+                                                     )
+                                                 )   
+                                             ).all() )
+                    return render_template('professional/accepted_requests.html', requests=results)
+
                 else:
                     flash("Invalid search type.", "danger")
                     return redirect(url_for('professional_dashboard'))
