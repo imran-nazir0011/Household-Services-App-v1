@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Summary Statistics</h1>
+
+    <!-- Display Role-Specific Statistics -->
+    <div>
+        <h3>Role: {{ role }}</h3>
+        <ul>
+            {% for key, value in summary_data.items() %}
+                <li>{{ key.replace('_', ' ').capitalize() }}: {{ value }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Plot Section -->
+    <div>
+        <h4>Visualizations</h4>
+        {% if plot_files %}
+            <div class="row">
+                {% for plot in plot_files %}
+                    <div class="col-md-4 mb-3">
+                        <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="{{ plot }}" class="img-fluid">
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No plots available for this role.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

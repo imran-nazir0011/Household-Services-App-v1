@@ -124,7 +124,3 @@ def  customer_routes(app:Flask ):
                 return redirect(url_for('customer_profile'))
 
             return render_template('customer/profile.html', customer=customer)
-
-        @app.route('/customer/summary')
-        def customer_summary():
-                return render_template('summary.html')

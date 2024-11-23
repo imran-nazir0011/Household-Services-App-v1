@@ -22,6 +22,9 @@
             <!-- Login/Logout/Register Links -->
             {% if session.get('role') %}
             <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('summary') }}">Summary</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
             </li>
             {% else %}

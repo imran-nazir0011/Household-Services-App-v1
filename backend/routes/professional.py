@@ -112,6 +112,3 @@ def professional_routes(app:Flask ):
         return render_template('professional/profile.html', professional=professional, services=services)
 
 
-    @app.route('/professional/summary')
-    def professional_summary():
-        return render_template('summary.html')
