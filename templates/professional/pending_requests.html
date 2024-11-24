@@ -6,14 +6,14 @@
 <div class="container">
     <h2 class="my-4">Pending Service Requests</h2>
 
-    <!-- Bootstrap Flash Message Display -->
+
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="alert alert-{{ messages[0][0] }} alert-dismissible fade show" role="alert">
-                {{ messages[0][1] }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endif %}
+    {% if messages %}
+    <div class="alert alert-{{ messages[0][0] }} alert-dismissible fade show" role="alert">
+        {{ messages[0][1] }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
     {% endwith %}
 
     {% if requests %}
@@ -25,6 +25,7 @@
                     <th>Service</th>
                     <th>Address</th>
                     <th>Date of Request</th>
+                    <th>Customer's status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -36,9 +37,17 @@
                     <td>{{ request.customer.address}}</td>
                     <td>{{ request.date_of_request.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>
+                        {% if request.customer.verification_status %}
+                        <span class="badge bg-success">Verified</span>
+                        {% else %}
+                        <span class="badge bg-warning">Not Verified</span>
+                        {% endif %}
+                    </td>
+                    <td>
                         <form method="POST" action="{{ url_for('view_pending_requests') }}">
                             <input type="hidden" name="request_id" value="{{ request.id }}">
-                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to accept this request?')">Accept</button>
+                            <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('Are you sure you want to accept this request?')">Accept</button>
                         </form>
                     </td>
                 </tr>

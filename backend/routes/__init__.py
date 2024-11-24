@@ -4,5 +4,4 @@ from flask import current_app as app
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from werkzeug.utils import secure_filename
-# Import any shared models or utilities
 from backend.models import *

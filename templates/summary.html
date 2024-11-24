@@ -2,32 +2,41 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Summary Statistics</h1>
+    <h1 class="text-center">Summary Statistics</h1>
 
-    <!-- Display Role-Specific Statistics -->
-    <div>
-        <h3>Role: {{ role }}</h3>
-        <ul>
-            {% for key, value in summary_data.items() %}
-                <li>{{ key.replace('_', ' ').capitalize() }}: {{ value }}</li>
-            {% endfor %}
-        </ul>
+    <div class="mt-4 ">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Statistic</th>
+                    <th scope="col">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in summary_data.items() %}
+                    <tr>
+                        <td>{{ key.replace('_', ' ').capitalize() }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Plot Section -->
-    <div>
-        <h4>Visualizations</h4>
+    <div class="mt-4">
+        <h4 class="text-center">Visualizations</h4>
         {% if plot_files %}
-            <div class="row">
+            <div class="row justify-content-center">
                 {% for plot in plot_files %}
                     <div class="col-md-4 mb-3">
-                        <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="{{ plot }}" class="img-fluid">
+                        <img src="{{ url_for('static', filename='plots/' + plot) }}" alt="{{ plot }}" class="img-fluid rounded">
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p>No plots available for this role.</p>
+            <p class="text-center">No plots available for this role.</p>
         {% endif %}
     </div>
 </div>
 {% endblock %}
+

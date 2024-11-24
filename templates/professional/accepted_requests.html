@@ -15,6 +15,7 @@
                     <th>Service</th>
                     <th>Date of Request</th>
                     <th>Address</th>
+                    <th>Customer's status</th>
                     <th>Service Status</th>
                     <th>Remarks</th>
                     {% if request.service_status == 'assigned' %}
@@ -30,16 +31,23 @@
                     <td>{{ request.date_of_request.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>{{ request.customer.address }}</td>
                     <td>
-                        
+                        {% if request.customer.verification_status  %}
+                            <span class="badge bg-success">Verified</span>
+                        {% else %}
+                            <span class="badge bg-warning">Not Verified</span>
+                        {% endif %}
+                    </td>
+                    <td>
                             {% if request.service_status == 'pending' %}
                                 <span class="badge bg-primary">Pending</span>
                             {% elif request.service_status == 'completed' %}
                                 <span class="badge bg-success">Completed</span>
                             {% elif request.service_status == 'canceled' %}
                                 <span class="badge bg-warning">Canceled</span>
+                            {% elif request.service_status == 'assigned'%}
+                                <span class="badge bg-info">Canceled</span>
                             {% endif %}
-                        
-                        
+                            
                     </td>
                     <td>{{ request.remarks }}</td>
                     {% if request.service_status == 'assigned' %}

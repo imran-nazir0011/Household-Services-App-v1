@@ -3,7 +3,7 @@ from sqlalchemy import and_, or_
 
 db = SQLAlchemy()
 
-# Admin model remains unchanged as it has no direct relationships
+ 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
@@ -18,12 +18,12 @@ class Customer(db.Model):
     phone = db.Column(db.String(15))
     address = db.Column(db.String(255))
     
-    # Verification status attribute
+     
     verification_status = db.Column(db.Boolean, default=False)
 
 
 
-    # Relationship to access service requests directly from a customer
+     
     service_requests = db.relationship('ServiceRequest', back_populates='customer', lazy=True)
 
 class ServiceProfessional(db.Model):
@@ -33,23 +33,24 @@ class ServiceProfessional(db.Model):
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
     phone = db.Column(db.String(15))
-    service_type = db.Column(db.String(50))  # Specifies the type of service they provide, e.g., "plumber"
-    experience = db.Column(db.Integer)       # Experience in years
+    address = db.Column(db.Text)
+    service_type = db.Column(db.String(50))   
+    experience = db.Column(db.Integer)        
     verified = db.Column(db.Boolean, default=False)
 
-    # Relationship to access service requests assigned to the professional
+     
     service_requests = db.relationship('ServiceRequest', back_populates='professional', lazy=True)
 
 
 class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)  # e.g., "Plumbing", "AC Repair"
-    price = db.Column(db.Float, nullable=False)      # Base price for this service
+    name = db.Column(db.String(50), nullable=False)   
+    price = db.Column(db.Float, nullable=False)       
     description = db.Column(db.Text)
-    time_required = db.Column(db.Integer)            # Time in minutes
-    image = db.Column(db.String(100), nullable=True)  # Image filename (e.g., "plumbing.jpg")
+    time_required = db.Column(db.Integer)             
+    image = db.Column(db.String(100), nullable=True)   
 
-    # Relationship to access service requests for this service
+     
     service_requests = db.relationship('ServiceRequest', back_populates='service', lazy=True)
 
 
@@ -63,7 +64,7 @@ class ServiceRequest(db.Model):
     service_status = db.Column(db.String(20))
     remarks = db.Column(db.Text)
 
-    # Establish relationships with foreign key references
+     
     service = db.relationship('Service', back_populates='service_requests')
     customer = db.relationship('Customer', back_populates='service_requests')
     professional = db.relationship('ServiceProfessional', back_populates='service_requests')

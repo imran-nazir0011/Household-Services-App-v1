@@ -6,7 +6,7 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Manage Service Professionals</h2>
 
-    <!-- Flash messages for feedback -->
+
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -18,7 +18,6 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Service Professional Table -->
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered table-hover text-center">
@@ -29,6 +28,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Address</th>
                         <th>Service Type</th>
                         <th>Experience (Years)</th>
                         <th>Verification Status</th>
@@ -37,20 +37,20 @@
                 </thead>
                 <tbody>
                     {% for professional in service_professionals %}
+                    {% if professional.name != 'Deleted Professional' %}
                         <tr>
                             <td>{{ professional.id }}</td>
                             <td>{{ professional.username }}</td>
                             <td>{{ professional.name }}</td>
                             <td>{{ professional.email }}</td>
                             <td>{{ professional.phone }}</td>
+                            <td>{{ professional.address }}</td>
                             <td>{{ professional.service_type }}</td>
                             <td>{{ professional.experience }}</td>
                             <td>
                                
                                 {% if professional.verified %}
                                     <span class="badge bg-success">Verified</span>
-                                {% elif professional.name == 'Deleted Professional' %}
-                                    <span class="badge bg-secondary">Deleted</span>
                                 {% else %}
                                     <span class="badge bg-warning">Not Verified</span>
                                 {% endif %}
@@ -58,7 +58,7 @@
                             </td>
                             <td>
                                 {% if professional.name != 'Deleted Professional' %}
-                                <!-- Form for actions -->
+                               
                                 <form action="{{ url_for('manage_service_professionals') }}" method="POST" class="d-inline">
                                     <input type="hidden" name="professional_id" value="{{ professional.id }}">
                                     {% if not professional.verified %}
@@ -77,6 +77,7 @@
                                 {% endif %}
                             </td>
                         </tr>
+                    {% endif %}
                     {% else %}
                         <tr>
                             <td colspan="9" class="text-center">No service professionals found.</td>

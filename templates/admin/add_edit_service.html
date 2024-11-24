@@ -18,7 +18,6 @@
         {% endif %}
     </h2>
 
-    <!-- Flash messages for feedback -->
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -30,7 +29,6 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Add/Edit Service Form -->
     <div class="card">
         <div class="card-body">
             <form 
@@ -87,7 +85,7 @@
                         value="{{ service.time_required if service else '' }}">
                 </div>
 
-                <!-- Image Upload -->
+             
                 <div class="mb-3">
                     <label for="image" class="form-label">Service Image (Optional)</label>
                     <input 

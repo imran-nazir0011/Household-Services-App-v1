@@ -6,37 +6,40 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center">My Profile</h2>
 
-    <!-- Profile Form -->
     <form method="POST" action="{{ url_for('professional_profile') }}">
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="card-title text-center mb-3">Personal Information</h5>
 
-                <!-- Name -->
+
                 <div class="mb-3">
                     <label for="name" class="form-label">Full Name</label>
                     <input type="text" class="form-control" id="name" name="name" value="{{ professional.name }}" required disabled>
                 </div>
 
-                <!-- Username -->
+  
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username" value="{{ professional.username }}" required disabled>
                 </div>
 
-                <!-- Email -->
+              
                 <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>
                     <input type="email" class="form-control" id="email" name="email" value="{{ professional.email }}" required disabled>
                 </div>
 
-                <!-- Phone Number -->
+               
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
                     <input type="text" class="form-control" id="phone" name="phone" value="{{ professional.phone }}" required disabled>
                 </div>
-
-                <!-- Service Type -->
+                
+                <div class="mb-3">
+                    <label for="address" class="form-label"> Address </label>
+                    <input type="text" class="form-control" id="address" name="address" value="{{ professional.address }}" required disabled>
+                </div>
+           
                 <div class="mb-3">
                     <label for="service_type" class="form-label">Service Type</label>
                     <select class="form-select" id="service_type" name="service_type" required 
@@ -50,13 +53,13 @@
                     </select>
                 </div>
 
-                <!-- Experience -->
+                
                 <div class="mb-3">
                     <label for="experience" class="form-label">Years of Experience</label>
                     <input type="number" class="form-control" id="experience" name="experience" value="{{ professional.experience }}" required disabled>
                 </div>
 
-                <!-- Edit and Save Buttons -->
+                
                 <div class="d-flex justify-content-end mt-3">
                     <button type="button" class="btn btn-secondary me-2" id="edit-btn" onclick="enableEditMode()">Edit</button>
                     <button type="submit" class="btn btn-primary d-none" id="save-btn">Save</button>
@@ -65,7 +68,7 @@
         </div>
     </form>
 
-    <!-- Verification Status -->
+
     <div class="card mt-4 shadow-sm">
         <div class="card-body text-center">
             <h5 class="card-title">Verification Status</h5>
@@ -80,19 +83,19 @@
 
 <script>
     function enableEditMode() {
-        // Enable form fields
+        
         document.getElementById('name').disabled = false;
         document.getElementById('email').disabled = false;
         document.getElementById('phone').disabled = false;
         document.getElementById('experience').disabled = false;
 
-        // Enable service type dropdown only if its value is "None"
+      
         const serviceTypeField = document.getElementById('service_type');
         if (serviceTypeField.value === "None") {
             serviceTypeField.disabled = false;
         }
 
-        // Show Save button and hide Edit button
+        
         document.getElementById('edit-btn').classList.add('d-none');
         document.getElementById('save-btn').classList.remove('d-none');
     }

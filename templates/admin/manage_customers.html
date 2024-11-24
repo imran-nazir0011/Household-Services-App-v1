@@ -18,7 +18,7 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Customers Table -->
+
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered table-hover">
@@ -35,6 +35,7 @@
                 </thead>
                 <tbody>
                     {% for customer in customers %}
+                    {% if customer.name != 'Deleted Customer' %}
                         <tr>
                             <td>{{ customer.id }}</td>
                             <td>{{ customer.name }}</td>
@@ -44,8 +45,6 @@
                             <td>
                                 {% if customer.verification_status %}
                                     <span class="badge bg-success">Verified</span>
-                                {% elif customer.name == 'Deleted Customer' %}
-                                    <span class="badge bg-secondary">Deleted</span>
                                 {% else  %}
                                     <span class="badge bg-warning">Not Verified</span>
                                 {% endif %}
@@ -53,25 +52,26 @@
                             <td>
 
                                 {% if customer.name != 'Deleted Customer'%}
-                                <!-- Action Form -->
+                               
                                 <form action="{{ url_for('manage_customers') }}" method="POST" style="display: inline;">
                                     <input type="hidden" name="customer_id" value="{{ customer.id }}">
                                 
                                     {% if not customer.verification_status %}
-                                        <!-- Verify Action -->
+                                        
                                         <button type="submit" name="action" value="verify" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to verify this customer?')">Verify</button>
                                     {% else %}
-                                        <!-- Reject Action -->
+                                    
                                         <button type="submit" name="action" value="reject" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to reject this customer?')">Reject</button>
                                     {% endif %}
 
-                                    <!-- Delete Action -->
+                                   
                                     <button type="submit" name="action" value="delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this customer?')">Delete</button>
                                 </form>
                                 {% endif %}
 
                             </td>
                         </tr>
+                    {% endif %}
                     {% else %}
                         <tr>
                             <td colspan="6" class="text-center">No customers found</td>

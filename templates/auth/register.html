@@ -8,7 +8,7 @@
         <div class="col-md-6">
             <h2 class="text-center mb-4">Register</h2>
             
-            <!-- Flash messages for feedback -->
+            
             {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -49,7 +49,7 @@
                         
                         <button type="submit" class="btn btn-primary w-100">Register</button>
                     </form>
-                    <!-- Link to Login Page -->
+                    
                     <p class="text-center mt-3">
                         Already have an account? <a href="{{ url_for('login') }}">Log in here</a>
                     </p>
