@@ -6,7 +6,7 @@ def auth_routes(app:Flask ):
          
         @app.route('/')
         def index():
-            return render_template('base.html')
+            return render_template('home.html')
 
         @app.route('/logout')
         def logout():
@@ -191,13 +191,14 @@ def auth_routes(app:Flask ):
                 flash("Invalid role or access denied.", "danger")
                 return redirect(url_for('index'))
 
+        
 
         def generate_admin_plots(summary_data):
             plot_files = []
             plot_folder = 'static/plots'
             os.makedirs(plot_folder, exist_ok=True)
 
-             
+            # Customers and Professionals Distribution Pie Chart
             admin_plot = 'user_professional_distribution.png'
             if os.path.exists(os.path.join(plot_folder, admin_plot)):
                 os.remove(os.path.join(plot_folder, admin_plot))   
@@ -210,35 +211,43 @@ def auth_routes(app:Flask ):
             plt.close()
             plot_files.append(admin_plot)
 
-             
+            # Customer Verification Status Bar Chart
             customer_verification_plot = 'customer_verification_status.png'
             if os.path.exists(os.path.join(plot_folder, customer_verification_plot)):
                 os.remove(os.path.join(plot_folder, customer_verification_plot))   
-            labels = ['Verified', 'Not Verified','Deleted Customers']
-            customer_counts = [summary_data['verified_customers'], summary_data['unverified_customers'],summary_data['deleted_customers']]
+            labels = ['Verified', 'Not Verified', 'Deleted Customers']
+            customer_counts = [
+                summary_data['verified_customers'],
+                summary_data['unverified_customers'],
+                summary_data['deleted_customers']
+            ]
             plt.figure(figsize=(8, 5))
-            plt.bar(labels, customer_counts, color=['green', 'red','blue'])
+            plt.bar(labels, customer_counts, color=['green', 'red', 'blue'])
             plt.title('Verified vs Not Verified Customers vs Deleted Customers')
             plt.ylabel('Number of Customers')
             plt.savefig(os.path.join(plot_folder, customer_verification_plot))
             plt.close()
             plot_files.append(customer_verification_plot)
 
-             
+            # Professional Verification Status Bar Chart
             professional_verification_plot = 'professional_verification_status.png'
             if os.path.exists(os.path.join(plot_folder, professional_verification_plot)):
                 os.remove(os.path.join(plot_folder, professional_verification_plot))   
-            labels = ['Verified', 'Not Verified','Deleted Professionals']
-            professional_counts = [summary_data['verified_professionals'], summary_data['unverified_professionals'],summary_data['deleted_professionals']]
+            labels = ['Verified', 'Not Verified', 'Deleted Professionals']
+            professional_counts = [
+                summary_data['verified_professionals'],
+                summary_data['unverified_professionals'],
+                summary_data['deleted_professionals']
+            ]
             plt.figure(figsize=(8, 5))
-            plt.bar(labels, professional_counts, color=['blue', 'orange','green'])
+            plt.bar(labels, professional_counts, color=['blue', 'orange', 'green'])
             plt.title('Verified vs Not Verified Professionals')
             plt.ylabel('Number of Professionals')
             plt.savefig(os.path.join(plot_folder, professional_verification_plot))
             plt.close()
             plot_files.append(professional_verification_plot)
 
-             
+            # Active vs Inactive Services Bar Chart
             service_status_plot = 'service_status_distribution.png'
             if os.path.exists(os.path.join(plot_folder, service_status_plot)):
                 os.remove(os.path.join(plot_folder, service_status_plot))   
@@ -252,7 +261,7 @@ def auth_routes(app:Flask ):
             plt.close()
             plot_files.append(service_status_plot)
 
-             
+            # Service Request Status Distribution Bar Chart
             request_status_plot = 'service_request_status_distribution.png'
             if os.path.exists(os.path.join(plot_folder, request_status_plot)):
                 os.remove(os.path.join(plot_folder, request_status_plot))   
@@ -261,7 +270,7 @@ def auth_routes(app:Flask ):
                 summary_data['completed_requests'],
                 summary_data['canceled_requests'],
                 summary_data['pending_requests'],
-                summary_data['assigned_requests'],
+                summary_data['assigned_requests']
             ]
             plt.figure(figsize=(10, 6))
             plt.bar(request_labels, request_counts, color=['green', 'red', 'orange', 'blue'])
@@ -271,9 +280,25 @@ def auth_routes(app:Flask ):
             plt.close()
             plot_files.append(request_status_plot)
 
-            return plot_files
+            # Service Counts Bar Chart
+            service_counts_plot = 'service_counts_distribution.png'
+            if os.path.exists(os.path.join(plot_folder, service_counts_plot)):
+                os.remove(os.path.join(plot_folder, service_counts_plot))   
+            service_data = summary_data['requests_by_service']
+            service_names = [item['service'] for item in service_data]
+            service_counts = [item['count'] for item in service_data]
+            plt.figure(figsize=(12, 6))
+            plt.bar(service_names, service_counts, color='teal')
+            plt.xticks(rotation=45, ha='right')
+            plt.title('Number of Requests per Service')
+            plt.ylabel('Number of Requests')
+            plt.xlabel('Services')
+            plt.tight_layout()  # Ensure labels fit in the plot area
+            plt.savefig(os.path.join(plot_folder, service_counts_plot))
+            plt.close()
+            plot_files.append(service_counts_plot)
 
-       
+            return plot_files
 
          
         def generate_customer_plots(summary_data):
@@ -314,12 +339,7 @@ def auth_routes(app:Flask ):
             plot_files.append(customer_summary_plot)
 
             return plot_files
-
-
-
-
-
-         
+        
         def generate_professional_plots(summary_data):
             plot_files = []
             plot_folder = 'static/plots'
@@ -354,6 +374,7 @@ def auth_routes(app:Flask ):
 
              
             if role == 'Admin':
+                
                 summary_data['total_customers'] = Customer.query.count()
                 summary_data['total_professionals'] = ServiceProfessional.query.count()
                 summary_data['total_services'] = Service.query.count()
@@ -393,6 +414,14 @@ def auth_routes(app:Flask ):
 
                  
                 summary_data['canceled_requests'] = ServiceRequest.query.filter(ServiceRequest.service_status == 'canceled').count()
+                
+                service_requests_count = db.session.query(
+                                                    Service.name, db.func.count(ServiceRequest.id)
+                                                ).join(ServiceRequest).group_by(Service.name).all()
+                
+                summary_data['requests_by_service'] = [
+                                    {"service": service_name, "count": count} for service_name, count in service_requests_count
+                                ]
 
                 plot_files = generate_admin_plots(summary_data)
 

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="mt-5 text-center">
+    <h1>Welcome to  A-Z Household Services</h1>
+    <p class="lead mt-3">Your one-stop solution for connecting customers with skilled service professionals!</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        
+        <div class="col-md-6">
+            <div class="card shadow">
+                <img src="{{ url_for('static', filename='images/customer.jpg') }}" class="card-img-top" alt="Customers">
+                <div class="card-body">
+                    <h4 class="card-title">For Customers</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Find trusted service professionals near you.</li>
+                        <li class="list-group-item">Book appointments with ease.</li>
+                        <li class="list-group-item">Track and manage your service requests.</li>
+                        <li class="list-group-item">Rate and review service professionals.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-md-6">
+            <div class="card shadow">
+                <img src="{{ url_for('static', filename='images/professional.jpg') }}" class="card-img-top" alt="Professionals">
+                <div class="card-body">
+                    <h4 class="card-title">For Professionals</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Get listed and connect with potential customers.</li>
+                        <li class="list-group-item">Manage your appointments seamlessly.</li>
+                        <li class="list-group-item">Grow your business with customer reviews.</li>
+                        <li class="list-group-item">Access detailed reports on your services.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="mt-5 text-end">
+    <a href="{{ url_for('admin_login') }}" class="text-decoration-none text-muted small">
+        Are you an admin? Log in here.
+    </a>
+</div>
+{% endblock %}

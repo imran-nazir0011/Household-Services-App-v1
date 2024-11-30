@@ -8,8 +8,7 @@
         <a class="navbar-brand" href="{{ url_for('customer_dashboard') }}">Welcome, Customer</a>
         {% elif session.get('role') == 'ServiceProfessional' %}
         <a class="navbar-brand" href="{{ url_for('professional_dashboard') }}">Welcome, Service Professional</a>
-        {% else %}
-        <a class="navbar-brand" href="{{ url_for('index') }}">Welcome</a>
+        
         {% endif %}
   
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
